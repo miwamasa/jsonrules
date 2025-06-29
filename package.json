@@ -1,0 +1,21 @@
+{
+  "name": "functional-jsonpath",
+  "version": "2.0.0",
+  "description": "Functional programming approach to JSON transformation using JSONPath rules with tree automata",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint src/**/*.js",
+    "dev": "node src/example.js"
+  },
+  "keywords": ["jsonpath", "functional", "json", "transformation", "automata"],
+  "author": "miwamasa",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
