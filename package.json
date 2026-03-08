@@ -7,9 +7,17 @@
   "scripts": {
     "test": "node --test",
     "lint": "eslint src/**/*.js",
-    "dev": "node src/example.js"
+    "dev": "node src/example.js",
+    "build:browser": "node scripts/build-json-mini.js",
+    "prepare:browser": "npm run build:browser"
   },
-  "keywords": ["jsonpath", "functional", "json", "transformation", "automata"],
+  "keywords": [
+    "jsonpath",
+    "functional",
+    "json",
+    "transformation",
+    "automata"
+  ],
   "author": "miwamasa",
   "license": "MIT",
   "dependencies": {
