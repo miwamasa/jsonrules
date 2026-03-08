@@ -9,6 +9,7 @@ A functional programming approach to JSON transformation using JSONPath rules wi
 - **Aggregate Operations**: Built-in support for `max()`, `sum()`, `avg()`, `count()`, etc.
 - **Type Safety**: Comprehensive validation and error handling
 - **High Performance**: Optimized for large JSON structures
+- **Browser Mini Runtime**: Includes `json-mini` for quick browser usage
 
 ## Tree Automaton Approach for `[*]` Wildcards
 
@@ -16,71 +17,86 @@ The library uses a tree automaton to handle `[*]` wildcards by:
 
 1. **Non-deterministic State Transitions**: When encountering `[*]`, the automaton creates parallel states for each array element
 2. **Path Tracking**: Each state maintains its complete path context
-3. **Parallel Processing**: All states are processed simultaneously 
+3. **Parallel Processing**: All states are processed simultaneously
 4. **Result Aggregation**: Final results are collected from all accepting states
+
+## 実行環境 (Runtime)
+
+- Node.js 18+
+- npm 9+
+- Browser demo: Any modern browser with `structuredClone` support
 
 ## Installation
 
+### Node.js library
+
 ```bash
-npm install functional-jsonpath
+npm install
 ```
+
+### Build browser `json-mini`
+
+```bash
+npm run build:browser
+```
+
+This generates `dist/json-mini.min.js`.
 
 ## Usage
 
-### Basic Transformation
+### Basic Transformation (Node.js)
 
 ```javascript
 import { transform } from 'functional-jsonpath';
 
 const rules = {
-  "pathMappings": [{
-    "source": "$.store.book[*].price", 
-    "target": "$.store.novel[*].cost"
+  pathMappings: [{
+    source: '$.store.book[*].price',
+    target: '$.store.novel[*].cost'
   }, {
-    "source": "$.store.book[*].title",
-    "target": "$.store.novel[*].bookTitle" 
+    source: '$.store.book[*].title',
+    target: '$.store.novel[*].bookTitle'
   }]
 };
 
 const result = transform(sourceData, rules);
 ```
 
-### Aggregate Operations
+### Browser usage with `json-mini`
 
-```javascript
-const aggregateRules = {
-  "pathMappings": [{
-    "source": "$.store.book[*].price.max()",
-    "target": "$.storeSummary.maxPrice"
-  }, {
-    "source": "$.store.book[*].price.sum()",
-    "target": "$.storeSummary.totalCostOfBooks"
-  }]
-};
+```html
+<script src="./dist/json-mini.min.js"></script>
+<script>
+  const result = JsonMini.transform(sourceData, rules);
+  console.log(result);
+</script>
 ```
 
-### Functional Approach
+### Local demo HTML
 
-```javascript
-import { createTransformer, composeTransformations } from 'functional-jsonpath';
-
-// Create reusable transformers
-const bookTransformer = createTransformer(bookRules);
-const statsTransformer = createTransformer(statsRules);
-
-// Compose multiple transformations
-const composedTransformer = composeTransformations(
-  bookTransformer,
-  statsTransformer
-);
-
-const result = composedTransformer(data);
+```bash
+python3 -m http.server 8080
+# open http://localhost:8080/examples/json-mini-demo.html
 ```
+
+## Install/Deliver `json-mini` to another project
+
+1. Clone this repository and build:
+   ```bash
+   npm install
+   npm run build:browser
+   ```
+2. Copy `dist/json-mini.min.js` to your web project.
+3. Reference it from HTML:
+   ```html
+   <script src="./vendor/json-mini.min.js"></script>
+   ```
+4. Use `JsonMini.transform(...)`.
 
 ## Available Aggregate Operations
 
 - `max()` - Maximum value
-- `min()` - Minimum value  
+- `min()` - Minimum value
 - `sum()` - Sum of all values
 - `avg()` - Average value
 - `count()` - Count of items
@@ -111,12 +127,14 @@ const result = composedTransformer(data);
 - `pipe(...fns)` - Functional pipe utility
 - `curry(fn)` - Curry function utility
 
-## Example
+## Example files
 
-See `src/example.js` for comprehensive examples demonstrating all features.
+- Node examples: `src/example.js`
+- Browser example: `examples/json-mini-demo.html`
 
 ```bash
-npm run dev  # Run examples
+npm run dev  # Run Node examples
+npm run build:browser
 npm test     # Run test suite
 ```
 

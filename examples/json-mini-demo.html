@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>json-mini Browser Demo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; max-width: 1100px; }
+    h1 { margin-bottom: 8px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    textarea, pre { width: 100%; min-height: 250px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    textarea { padding: 12px; }
+    pre { background: #f5f5f5; padding: 12px; overflow: auto; }
+    button { margin: 16px 0; padding: 8px 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>json-mini Demo</h1>
+  <p>JSONとルールを編集して <code>JsonMini.transform</code> の挙動を確認できます。</p>
+
+  <div class="grid">
+    <div>
+      <h2>Source JSON</h2>
+      <textarea id="source"></textarea>
+    </div>
+    <div>
+      <h2>Rules JSON</h2>
+      <textarea id="rules"></textarea>
+    </div>
+  </div>
+
+  <button id="run">Transform</button>
+
+  <h2>Result</h2>
+  <pre id="result"></pre>
+
+  <script src="../dist/json-mini.min.js"></script>
+  <script>
+    const sourceEl = document.getElementById('source');
+    const rulesEl = document.getElementById('rules');
+    const resultEl = document.getElementById('result');
+
+    const defaultSource = {
+      store: {
+        book: [
+          { title: 'Sayings of the Century', price: 8.95 },
+          { title: 'Sword of Honour', price: 12.99 },
+          { title: 'Moby Dick', price: 8.99 }
+        ]
+      }
+    };
+
+    const defaultRules = {
+      pathMappings: [
+        { source: '$.store.book[*].title', target: '$.catalog.items[*].name' },
+        { source: '$.store.book[*].price.max()', target: '$.catalog.stats.maxPrice' }
+      ]
+    };
+
+    sourceEl.value = JSON.stringify(defaultSource, null, 2);
+    rulesEl.value = JSON.stringify(defaultRules, null, 2);
+
+    const runTransform = () => {
+      try {
+        const source = JSON.parse(sourceEl.value);
+        const rules = JSON.parse(rulesEl.value);
+        const output = JsonMini.transform(source, rules);
+        resultEl.textContent = JSON.stringify(output, null, 2);
+      } catch (error) {
+        resultEl.textContent = `Error: ${error.message}`;
+      }
+    };
+
+    document.getElementById('run').addEventListener('click', runTransform);
+    runTransform();
+  </script>
+</body>
+</html>
